@@ -11,5 +11,7 @@ router.post('/createParcel',checkAuth(Role.SENDER),ParcelController.createParcel
 router.patch('/cancelParcel/:id',checkAuth(Role.SENDER),ParcelController.cancelParcle)
 router.get("/getParcel",checkAuth(Role.SENDER),ParcelController.getParcelsByEmail)
 router.get("/reciverParcels",checkAuth(Role.RECIVER),ParcelController.incomingParcels)
+router.patch("/reciverConfirm/:id",checkAuth(Role.RECIVER),ParcelController.confirmDelivery)
+router.get("/getreciverhistory",checkAuth(Role.RECIVER),ParcelController.getReceiverHistory)
 
 export const ParcelRoutes=router;

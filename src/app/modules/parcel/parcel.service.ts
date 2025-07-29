@@ -36,13 +36,40 @@ const incomingParcels = async (email: string) => {
 
   return dataa;
 };
+const confirmation = async (id: string, payload: Partial<IParcel>) => {
+  const existParcel = await Parcel.findById(id);
+  if (!existParcel) {
+    throw new Error("Parcel not found");
+  }
 
+  // ✅ Check the current value from the DB, not from the payload
+  if (existParcel.reciverConfiramtion === "Pending") {
+    const parcel = await Parcel.findByIdAndUpdate(id, payload, { new: true });
+    return parcel;
+  } else {
+    throw new Error("Already Confirmed");
+  }
+};
 
+const getDeliveryHistory = async (email: string) => {
+  const user = await User.findOne({ email });
+  const phone = user?.phone;
+
+  // Fetch only delivered parcels for this receiver
+  const history = await Parcel.find({
+    receiver: phone,
+    status: 'Delivered',
+  }).sort({ deliveredAt: -1 }); // recent first
+
+  return history;
+};
 
 
 export const ParcelService={
     createParcel,
     cancelParcel,
     getParcelsByEmail,
-    incomingParcels
+    incomingParcels,
+    confirmation,
+    getDeliveryHistory
 }

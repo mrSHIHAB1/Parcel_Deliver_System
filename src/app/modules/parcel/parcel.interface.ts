@@ -30,4 +30,5 @@ export interface IParcel {
   trackingEvents: ITrackingEvent[];
   createdAt?: Date;
   updatedAt?: Date;
+  reciverConfiramtion?:string
 }

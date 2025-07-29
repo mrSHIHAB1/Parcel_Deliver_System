@@ -68,7 +68,12 @@ const parcelSchema = new Schema<ParcelDocument>({
     type: Boolean,
     default: false
   },
-  trackingEvents: [trackingEventSchema]
+  trackingEvents: [trackingEventSchema],
+  reciverConfiramtion:{
+    type:String,
+    enum:['Pending','Confirmed'],
+    default:'Pending'
+  }
 }, {
   timestamps: true
 });
