@@ -1,35 +1,102 @@
 import { User } from "../user/user.model";
-import { IParcel } from "./parcel.interface";
-import { Parcel } from "./parcel.model";
+import { ICoupon, IParcel } from "./parcel.interface";
+import { Coupon, Parcel } from "./parcel.model";
 
-const createParcel=async(payload:IParcel)=>{
+const createParcel = async (payload: IParcel) => {
+  console.log("Payload:", payload);
 
-const parcel = await Parcel.create(payload)
-return parcel;
+  const { weight, baseFee, ratePerKg,couponCode,  ...rest } = payload;
+
+  const calculateFee = (weight: number, baseFee: number, ratePerKg: number): number => {
+    return baseFee + weight * ratePerKg;
+  };
+
+  const feeWithoutDiscount = calculateFee(weight ?? 0, baseFee ?? 100, ratePerKg ?? 50);
+  console.log("Feewithout",feeWithoutDiscount)
+ let discountAmount = 0;
+console.log("got",couponCode)
+  // 2. Apply coupon logic if couponCode exists
+  if (couponCode) {
+    const coupon = await Coupon.findOne({ code: couponCode });
+
+    if (!coupon) {
+      throw new Error('Invalid coupon code');
+    }
+
+    if (coupon.discountType === 'flat') {
+      discountAmount = coupon.discountAmount;
+    } else if (coupon.discountType === 'percent') {
+      discountAmount = (feeWithoutDiscount * coupon.discountAmount) / 100;
+    }
+
+    // Optional: Prevent over-discount
+    if (discountAmount > feeWithoutDiscount) {
+      discountAmount = feeWithoutDiscount;
+    }
+    console.log("dis",discountAmount)
+  }
+
+  // 3. Final fee after discount
+  const fee = feeWithoutDiscount - discountAmount;
+  console.log("fee",fee)
+  const random = Math.floor(100000 + Math.random() * 900000);
+
+ // const trackingId = `PKG-${Date.now()}-${random}`;
+ const trackingId=generateTrackingId();
+
+  const parcel = await Parcel.create({
+    ...rest,
+    weight,
+    baseFee,
+    ratePerKg,
+    fee,
+    trackingId,
+    couponCode 
+    
+  });
+  console.log(parcel)
+  return parcel;
 }
 
-const cancelParcel=async(id:string,payload:Partial<IParcel>)=>{
-    const existParcel=await Parcel.findById(id);
-    if(!existParcel){
-        throw new Error("Parcel not found")
-    }
-      if ((payload.status as string) == "Dispatched") {
+const cancelParcel = async (id: string, payload: Partial<IParcel>) => {
+  const existParcel = await Parcel.findById(id);
+  if (!existParcel) {
+    throw new Error("Parcel not found")
+  }
+  if ((payload.status as string) == "Dispatched"|| (payload.status as string) ==  'In Transit'||(payload.status as string) == 'Delivered') {
     throw new Error("Product Dispactch cant cancel");
   }
-    const parcel =await Parcel.findByIdAndUpdate(id,payload,{new:true});
-    return parcel;
+  const parcel = await Parcel.findByIdAndUpdate(id, payload, { new: true });
+  return parcel;
 
 
 }
 
 const getParcelsByEmail = async (email: string) => {
-  const parcels = await Parcel.find({ sender: email });
-  return parcels;
+  const parcels = await Parcel.find({ createdby: email });
+  if (!parcels || parcels.length === 0) {
+    throw new Error("No parcels found for this user.");
+  }
+
+  return parcels.map(parcel => ({
+    trackingId: parcel.trackingId,
+    sender: parcel.sender,
+    type: parcel.type,
+    weight: parcel.weight,
+    fromAddress: parcel.fromAddress,
+    toAddress: parcel.toAddress,
+    fee: parcel.fee,
+    discountAmount: parcel.discountAmount,
+    status: parcel.status,
+    status_logs: parcel.trackingEvents,
+  }));
 };
+
+//Reciver
 const incomingParcels = async (email: string) => {
   const userd = await User.findOne({ email: email });
   const phone = userd?.phone;
-  const dataa=await Parcel.find({receiver:phone}).select(
+  const dataa = await Parcel.find({ receiver: phone }).select(
     'trackingId sender status fromAddress toAddress createdAt'
   );
 
@@ -64,24 +131,26 @@ const getDeliveryHistory = async (email: string) => {
   return history;
 };
 
-const blockParcel= async (id: string, payload: Partial<IParcel>) => {
+const blockParcel = async (id: string, payload: Partial<IParcel>) => {
   const existParcel = await Parcel.findById(id);
   if (!existParcel) {
     throw new Error("Parcel not found");
   }
 
 
-    const parcel = await Parcel.findByIdAndUpdate(id, payload, { new: true });
-    return parcel;
-  
+  const parcel = await Parcel.findByIdAndUpdate(id, payload, { new: true });
+  return parcel;
+
 };
 import { Types } from 'mongoose';
 import { ParcelStatus } from './parcel.interface';
+import { generateTrackingId } from "../../utils/generateTracking";
 
 interface UpdateParcelStatusInput {
   parcelId: string;
   newStatus: ParcelStatus;
   updatedBy: Types.ObjectId | string;
+  location?:string;
   note?: string;
 }
 
@@ -89,11 +158,34 @@ export const updateParcelStatus = async ({
   parcelId,
   newStatus,
   updatedBy,
+  location = '',
   note = '',
 }: UpdateParcelStatusInput) => {
+  
   const parcel = await Parcel.findById(parcelId);
   if (!parcel) {
     throw new Error('Parcel not found');
+  }
+  const statusFlow: string[] = [
+    'Approved',
+    'Dispatched',
+    'In Transit',
+    'Delivered',
+    'Cancelled'
+    
+  ];
+    const currentIndex = statusFlow.indexOf(parcel.status);
+  const newIndex = statusFlow.indexOf(newStatus);
+
+  // If new status is not part of flow or goes backward, throw error
+  if (newIndex === -1) {
+    throw new Error('Invalid status');
+  }
+
+  if (newIndex !== currentIndex + 1 &&  newStatus !== 'Cancelled') {
+    throw new Error(
+      `Status update must follow the correct order. Current: ${parcel.status}, Next allowed: ${statusFlow[currentIndex + 1]}`
+    );
   }
 
   if (parcel.status === newStatus) {
@@ -108,23 +200,50 @@ export const updateParcelStatus = async ({
     status: newStatus,
     updatedBy: updatedBy as Types.ObjectId,
     note,
+      location,
     timestamp: new Date(),
   });
 
   // Save parcel with new status and tracking event
   const updatedParcel = await parcel.save();
-
+console.log(updatedParcel)
   return updatedParcel;
 };
 
+export interface CreateCouponInput {
+  code: string;
+  discountAmount: number;
+  discountType: 'flat' | 'percent';
+  isActive?: boolean;
+  expiresAt?: Date;
+}
 
-export const ParcelService={
-    createParcel,
-    cancelParcel,
-    getParcelsByEmail,
-    incomingParcels,
-    confirmation,
-    getDeliveryHistory,
-    blockParcel,
-    updateParcelStatus
+export const createCoupon = async (data: CreateCouponInput): Promise<ICoupon> => {
+  // Check if coupon code already exists
+  const existing = await Coupon.findOne({ code: data.code });
+  if (existing) {
+    throw new Error('Coupon code already exists');
+  }
+
+  const coupon = new Coupon({
+    code: data.code,
+    discountAmount: data.discountAmount,
+    discountType: data.discountType,
+    isActive: data.isActive ?? true,
+    expiresAt: data.expiresAt,
+  });
+
+  return coupon.save();
+};
+
+export const ParcelService = {
+  createParcel,
+  cancelParcel,
+  getParcelsByEmail,
+  incomingParcels,
+  confirmation,
+  getDeliveryHistory,
+  blockParcel,
+  updateParcelStatus,
+  createCoupon
 }

@@ -18,6 +18,7 @@ export const trackingEventZodSchema = z.object({
   status: ParcelStatusEnum,
   note: z.string().optional(),
   updatedBy: z.string().optional(), // Assuming ObjectId as string
+  location: z.string().optional(),
   timestamp: z.date().optional(),
 });
 
@@ -25,7 +26,7 @@ export const trackingEventZodSchema = z.object({
 export const createParcelZodSchema = z.object({
   trackingId: z
     .string({ error: "Tracking ID is required" })
-    .min(5, "Tracking ID must be at least 5 characters"),
+    .min(5, "Tracking ID must be at least 5 characters").optional(),
   
   sender: z
     .string({ error: "Sender is required" })
@@ -52,7 +53,7 @@ export const createParcelZodSchema = z.object({
     .min(5, "To address must be at least 5 characters"),
 
   fee: z.number().nonnegative().optional(),
-
+  baseFee: z.number().optional(),
   status: ParcelStatusEnum.optional(),
 
   isBlocked: z.boolean().optional(),

@@ -1,17 +1,29 @@
 import { Request, response, Response } from "express";
 import { catchAsync } from "../../utils/catchAsync";
-import { ParcelService, updateParcelStatus } from "./parcel.service";
+import { createCoupon, ParcelService, updateParcelStatus } from "./parcel.service";
 import { sendResponse } from "../../utils/sendResponse";
-import { Parcel } from "./parcel.model";
+import { Coupon, Parcel } from "./parcel.model";
+import { ICoupon } from "./parcel.interface";
 
 
 
 const createParcel=catchAsync(async(req:Request,res:Response)=>{
    const email = (req.user as { email: string }).email;
- 
+
+console.log("Payload:",req.body);
+
+ const trackingEvents = [
+  {
+    status: 'Requested',
+    note: 'Parcel created',
+    timestamp: new Date(), 
+  },
+];
+
    const parcelData = {
       ...req.body,
-      sender: email,
+      createdby: email,
+      trackingEvents:trackingEvents
     };
 
     const result = await ParcelService.createParcel(parcelData);
@@ -37,9 +49,9 @@ const cancelParcle=catchAsync(async(req:Request,res:Response)=>{
 
 
 const getParcelsByEmail = catchAsync(async (req: Request, res: Response) => {
-  const email = (req.user as { email: string }).email;
+  const createdby = (req.user as { email: string }).email;
 
-  const parcels = await ParcelService.getParcelsByEmail(email);
+  const parcels = await ParcelService.getParcelsByEmail(createdby);
 
   sendResponse(res, {
     statusCode: 200,
@@ -106,35 +118,19 @@ const blockParcel=catchAsync(async(req:Request,res:Response)=>{
 
 
 
-const handleParcelStatusUpdate = catchAsync(async (req: Request, res: Response) => {
-  const { parcelId, newStatus, note } = req.body;
-  const userId = (req.user as { id: string }).id; // type assertion to include 'id'
 
-  const result = await updateParcelStatus({
-    parcelId,
-    newStatus,
-    updatedBy: userId,
-    note,
-  });
-
-  sendResponse(res, {
-    statusCode: 200,
-    success: true,
-    message: 'Parcel status updated successfully',
-    data: result,
-  });
-});
 // controllers/parcel.controller.ts
 // controllers/parcel.controller.ts
 export const updateStatusController = catchAsync(async (req: Request, res: Response) => {
   const parcelId = req.params.id;
-  const { newStatus, note } = req.body;
+  const { newStatus, location,note } = req.body;
   const updatedBy = (req.user as { id: string }).id; // must be set in auth middleware
-
+console.log(location)
   const result = await updateParcelStatus({
     parcelId,
     newStatus,
     updatedBy,
+    location,
     note,
   });
 
@@ -166,6 +162,25 @@ const trackingEvents = parcel?.trackingEvents.map(({ status, note, timestamp }) 
  
 });
 
+
+interface CreateCouponInput {
+  code: string;
+  discountAmount: number;
+  discountType: 'flat' | 'percent';
+  isActive?: boolean;
+  expiresAt?: Date;
+}
+
+
+const createCouponController = catchAsync(async (req: Request, res: Response) => {
+  const data = req.body;
+  const coupon = await createCoupon(data);
+  res.status(201).json({
+    success: true,
+    message: "Coupon created successfully",
+    data: coupon,
+  });
+});
 export const ParcelController={
     createParcel,
     cancelParcle,
@@ -175,7 +190,8 @@ export const ParcelController={
     getReceiverHistory,
     getallParcel,
     blockParcel,
-    handleParcelStatusUpdate,
+    
     updateStatusController,
-    getParcelstatusById
+    getParcelstatusById,
+    createCouponController
 }
