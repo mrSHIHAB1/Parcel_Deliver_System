@@ -33,7 +33,7 @@ JWT_EXPIRES_IN=1d
 NODE_ENV=development
 You can customize the environment variables as needed.
 ```
-4.Configure the typescript file 
+4. Configure the Typescript file
 
 5. Run the project
 ```javascript 
