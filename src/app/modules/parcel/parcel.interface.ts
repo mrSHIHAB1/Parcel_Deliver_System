@@ -12,10 +12,9 @@ export type ParcelStatus =
 export interface ITrackingEvent {
   status: ParcelStatus;
   note?: string;
-  updatedBy: Types.ObjectId;
+  updatedBy?: Types.ObjectId;
   timestamp?: Date;
 }
-
 export interface IParcel {
   trackingId: string;
   sender: string,

@@ -35,8 +35,18 @@ const getAllUsers = async () => {
     }
 };
 
+const updateUser = async (id: string, payload: Partial<IUser>) => {
+  const updatedUser = await User.findByIdAndUpdate(id, payload, { new: true });
+
+  if (!updatedUser) {
+    throw new Error('User not found');
+  }
+
+
+};
 
 export const UserServices={
      getAllUsers,
-    createUser
+    createUser,
+      updateUser 
 }

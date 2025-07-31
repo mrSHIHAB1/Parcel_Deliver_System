@@ -17,7 +17,7 @@ const trackingEventSchema = new Schema({
   updatedBy: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    
   },
   timestamp: {
     type: Date,

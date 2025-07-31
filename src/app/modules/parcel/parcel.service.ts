@@ -64,6 +64,59 @@ const getDeliveryHistory = async (email: string) => {
   return history;
 };
 
+const blockParcel= async (id: string, payload: Partial<IParcel>) => {
+  const existParcel = await Parcel.findById(id);
+  if (!existParcel) {
+    throw new Error("Parcel not found");
+  }
+
+
+    const parcel = await Parcel.findByIdAndUpdate(id, payload, { new: true });
+    return parcel;
+  
+};
+import { Types } from 'mongoose';
+import { ParcelStatus } from './parcel.interface';
+
+interface UpdateParcelStatusInput {
+  parcelId: string;
+  newStatus: ParcelStatus;
+  updatedBy: Types.ObjectId | string;
+  note?: string;
+}
+
+export const updateParcelStatus = async ({
+  parcelId,
+  newStatus,
+  updatedBy,
+  note = '',
+}: UpdateParcelStatusInput) => {
+  const parcel = await Parcel.findById(parcelId);
+  if (!parcel) {
+    throw new Error('Parcel not found');
+  }
+
+  if (parcel.status === newStatus) {
+    throw new Error('Parcel is already in that status');
+  }
+
+  // Update status
+  parcel.status = newStatus;
+
+  // Add a new tracking event
+  parcel.trackingEvents.push({
+    status: newStatus,
+    updatedBy: updatedBy as Types.ObjectId,
+    note,
+    timestamp: new Date(),
+  });
+
+  // Save parcel with new status and tracking event
+  const updatedParcel = await parcel.save();
+
+  return updatedParcel;
+};
+
 
 export const ParcelService={
     createParcel,
@@ -71,5 +124,7 @@ export const ParcelService={
     getParcelsByEmail,
     incomingParcels,
     confirmation,
-    getDeliveryHistory
+    getDeliveryHistory,
+    blockParcel,
+    updateParcelStatus
 }
