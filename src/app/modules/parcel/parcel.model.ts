@@ -59,6 +59,7 @@ const parcelSchema = new Schema<ParcelDocument>({
     type: Number,
     default: 0
   },
+  
   status: {
     type: String,
     enum: ['Requested', 'Approved', 'Dispatched', 'In Transit', 'Delivered', 'Cancelled', 'Blocked'],

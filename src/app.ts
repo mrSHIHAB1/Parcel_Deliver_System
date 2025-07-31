@@ -6,6 +6,8 @@ import { router } from './app/routes';
 import "./app/config/passport";
 import passport from 'passport';
 import { envVars } from './app/config/env';
+import { globalErrorHandler } from './app/middlewares/globalErrorHandler';
+import notFound from './app/middlewares/notFound';
 const app=express();
 
 app.use(expressSession({
@@ -26,4 +28,7 @@ app.get('/',(req:Request,res:Response)=>{
     })
 })
 
+app.use(globalErrorHandler)
+
+app.use(notFound)
 export default app;
