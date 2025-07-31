@@ -33,7 +33,9 @@ JWT_EXPIRES_IN=1d
 NODE_ENV=development
 You can customize the environment variables as needed.
 ```
-4. Run the project
+4.Configure the typescript file 
+
+5. Run the project
 ```javascript 
 npm run dev
 ```
@@ -42,7 +44,7 @@ For production:
 npm run build
 npm start
 ```
-5. API Base URL
+6. API Base URL
 ```javascript 
 http://localhost:5000/api/v1/
 ```
