@@ -60,7 +60,7 @@ http://localhost:5000/api/v1/
 
 ## 1. Register User
 ### Request: with roles SENDER/RECIVER/ADMIN (used for development purpose)
-POST  /api/v1/user/register
+POST=>  /api/v1/user/register
 Request
 ```javascript 
 {
@@ -74,7 +74,7 @@ Request
 ```
 ## 2. Login User
 ### Request:
-POST  /api/v1/auth/login
+POST=>  /api/v1/auth/login
 Request
 ```javascript 
 {
@@ -84,7 +84,7 @@ Request
 ```
 ## 3. Logout User
 ### Request:
-POST  /api/v1/auth/logout
+POST=>  /api/v1/auth/logout
 
 # SENDER Roles functionalities:
 
@@ -161,7 +161,7 @@ Request
 }
 ```
 ### Request: block parcel
-PATCH =>  api/v1/parcel/blockParcel/:id
+PATCH =>  api/v1/parcel/updateParcel/:id
 id: ObjectId of parcel
 Request
 ```javascript 
