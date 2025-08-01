@@ -153,12 +153,20 @@ GET =>  api/v1/parcel/allparcel
 GET =>  api/v1/user/all-users
 
 ## 11. Block or unblock users or parcels
-### Request:
+### Request: block user
 PATCH =>  api/v1/user/updateUsers/:id
 Request
 ```javascript 
 {
-    "isVerified":false
+    "isblocked":false
+}
+```
+### Request: block parcel
+PATCH =>  api/v1/parcel/blockParcel/:id
+Request
+```javascript 
+{
+    "isblocked":false
 }
 ```
 ## 12. Update delivery statuses
