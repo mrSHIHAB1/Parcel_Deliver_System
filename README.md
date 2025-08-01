@@ -26,15 +26,15 @@ npm install
 Create a .env file in the root directory and add the following:
 
 ```javascript 
-PORT=5000
-DATABASE_URL=
-JWT_SECRET=
-JWT_EXPIRES_IN=
-NODE_ENV=development
-|
-|
-|
-and other env files
+PORT:
+DB_URL:
+NODE_ENV: "development" | "production"
+BCRYPT_SALT_ROUND: 
+JWT_ACCESS_SECRET: 
+JWT_ACCESS_EXPIRES: 
+JWT_REFRESH_SECRET:
+JWT_REFRESH_EXPIRES:
+EXPRESS_SESSION_SECRET: 
 ```
 4. Configure the Typescript file
 
