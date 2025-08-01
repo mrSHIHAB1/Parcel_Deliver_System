@@ -52,7 +52,7 @@ http://localhost:5000/api/v1/
 
 ```
 # API Endpoints
-
+#Auth
 ## 1. Register User
 ### Request: with roles SENDER/RECIVER/ADMIN
 POST  /api/v1/user/register
@@ -85,5 +85,94 @@ Request
 {
  "email": "Admin@example.com",
   "password": "Mdshiab12@"
+}
+```
+#SENDER
+## 4. Create parcel via SENDER Role
+### Request:
+POST =>  api/v1/parcel/createParcel
+Request
+```javascript 
+{
+  "sender": "01828518888",
+  "receiver": "01757332222",
+  "type": "Fruit",
+  "weight": 1,
+  "baseFee":200,
+  "couponCode":"SAVE20-",
+  "fromAddress": "123 Main Street, City A",
+  "toAddress": "456 Second Avenue, City B",
+  "status": "Requested"
+ 
+}
+```
+
+## 5. Cancel parcel (if not dispatched)
+### Request:
+PATCH =>  api/v1/parcel/cancelParcel/:id
+Request
+```javascript 
+{
+    "status":"Cancelled"
+}
+```
+## 6. View all their parcels and status logs
+### Request:
+GET =>  api/v1/parcel/getParcel
+#RECIVER
+## 7. View incoming parcels
+### Request:
+GET =>  api/v1/parcel/reciverParcels
+
+## 8. Confirm parcel delivery
+### Request:
+PATCH =>  api/v1/parcel/reciverConfirm/:id
+Request
+```javascript 
+{
+    "reciverConfiramtion":"Confirmed"
+}
+```
+## 9. Delivery history
+### Request:
+GET =>  api/v1/parcel/getreciverhistory
+#ADMIN
+## 10. View and manage all users and parcels
+### Request:for Parcels
+GET =>  api/v1/parcel/allparcel
+
+### Request:for Users
+GET =>  api/v1/user/all-users
+
+## 11. Block or unblock users or parcels
+### Request:
+PATCH =>  api/v1/user/updateUsers/:id
+Request
+```javascript 
+{
+    "isVerified":false
+}
+```
+## 12. Update delivery statuses
+### Request:
+PATCH =>  api/v1/user/updateUsers/:id
+Request
+```javascript 
+{
+  "newStatus": "Delivered",
+  "note": "Delivered",
+  "location":"dhaka"
+}
+```
+#PUBLIC
+## 13. Track Parcels
+### Request:
+PATCH =>  api/v1/parcel/tracking-events/:id
+Request
+```javascript 
+{
+  "newStatus": "Delivered",
+  "note": "Delivered",
+  "location":"dhaka"
 }
 ```
