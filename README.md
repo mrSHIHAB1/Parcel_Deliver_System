@@ -66,8 +66,8 @@ Request
 {
   "name": "shanto",
   "email": "Mithila@example.com",
-  "password": "Mdshiab12@",
-  "phone": "+8801101125551",
+  "password": "Md456546ab12@",
+  "phone": "01828518888",
   "address": "Ashulia, Savar, Dhaka",
   "role": "SENDER"
 }
@@ -79,7 +79,7 @@ Request
 ```javascript 
 {
  "email": "Admin@example.com",
-  "password": "Mdshiab12@"
+  "password": "Md5453412@"
 }
 ```
 ## 3. Logout User
