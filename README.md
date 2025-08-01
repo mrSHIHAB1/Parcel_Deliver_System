@@ -177,12 +177,5 @@ Request
 
 ## 13. Track Parcels
 ### Request:
-PATCH =>  api/v1/parcel/tracking-events/:id
-Request
-```javascript 
-{
-  "newStatus": "Delivered",
-  "note": "Delivered",
-  "location":"dhaka"
-}
-```
+GET =>  api/v1/parcel/tracking-events/:trackingId
+
