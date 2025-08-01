@@ -1,4 +1,4 @@
-# 📦 Parcel Delivery System API – Project Overview
+# 📦 Parcel Delivery System API 
 ## 🎯 Objective
 Design and build a secure, modular, and role-based backend API using  for managing a parcel delivery system. Inspired by real-world logistics services like Pathao Courier, this API allows tracking, managing, and updating parcel statuses across different user roles.
 ### 🧰 Tech Stack
@@ -47,4 +47,43 @@ npm start
 6. API Base URL
 ```javascript 
 http://localhost:5000/api/v1/
+```
+```javascript 
+
+```
+# API Endpoints
+
+## 1. Register User
+### Request: with roles SENDER/RECIVER/ADMIN
+POST  /api/v1/user/register
+Request
+```javascript 
+{
+  "name": "shanto",
+  "email": "Mithila@example.com",
+  "password": "Mdshiab12@",
+  "phone": "+8801101125551",
+  "address": "Ashulia, Savar, Dhaka",
+  "role": "SENDER"
+}
+```
+## 2. Login User
+### Request:
+POST  /api/v1/auth/login
+Request
+```javascript 
+{
+ "email": "Admin@example.com",
+  "password": "Mdshiab12@"
+}
+```
+## 3. Logout User
+### Request:
+POST  /api/v1/auth/logout
+Request
+```javascript 
+{
+ "email": "Admin@example.com",
+  "password": "Mdshiab12@"
+}
 ```
