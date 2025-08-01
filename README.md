@@ -27,11 +27,14 @@ Create a .env file in the root directory and add the following:
 
 ```javascript 
 PORT=5000
-DATABASE_URL=mongodb://localhost:27017/your-db-name
-JWT_SECRET=your_jwt_secret
-JWT_EXPIRES_IN=1d
+DATABASE_URL=
+JWT_SECRET=
+JWT_EXPIRES_IN=
 NODE_ENV=development
-You can customize the environment variables as needed.
+|
+|
+|
+and other env files
 ```
 4. Configure the Typescript file
 
@@ -56,8 +59,8 @@ http://localhost:5000/api/v1/
 # Auth
 
 ## 1. Register User
-### Request: with roles SENDER/RECIVER/ADMIN
-POST  /api/v1/user/register
+### Request: with roles SENDER/RECIVER/ADMIN (used for development purpose)
+POST=>  /api/v1/user/register
 Request
 ```javascript 
 {
@@ -71,7 +74,7 @@ Request
 ```
 ## 2. Login User
 ### Request:
-POST  /api/v1/auth/login
+POST=>  /api/v1/auth/login
 Request
 ```javascript 
 {
@@ -81,18 +84,11 @@ Request
 ```
 ## 3. Logout User
 ### Request:
-POST  /api/v1/auth/logout
-Request
-```javascript 
-{
- "email": "Admin@example.com",
-  "password": "Mdshiab12@"
-}
-```
+POST=>  /api/v1/auth/logout
 
-# SENDER
+# SENDER Roles functionalities:
 
-## 4. Create parcel via SENDER Role
+## 4. Create parcel via SENDER/ADMIN Role
 ### Request:
 POST =>  api/v1/parcel/createParcel
 Request
@@ -103,7 +99,7 @@ Request
   "type": "Fruit",
   "weight": 1,
   "baseFee":200,
-  "couponCode":"SAVE20-",
+  "couponCode":"SAVE20",
   "fromAddress": "123 Main Street, City A",
   "toAddress": "456 Second Avenue, City B",
   "status": "Requested"
@@ -124,10 +120,12 @@ Request
 ### Request:
 GET =>  api/v1/parcel/getParcel
 
-# RECIVER
+# RECIVER Roles functionalities:
 
 ## 7. View incoming parcels
+
 ### Request:
+
 GET =>  api/v1/parcel/reciverParcels
 
 ## 8. Confirm parcel delivery
@@ -143,7 +141,7 @@ Request
 ### Request:
 GET =>  api/v1/parcel/getreciverhistory
 
-# ADMIN
+# ADMIN Roles functionalities:
 
 ## 10. View and manage all users and parcels
 ### Request:for Parcels
@@ -152,9 +150,10 @@ GET =>  api/v1/parcel/allparcel
 ### Request:for Users
 GET =>  api/v1/user/all-users
 
-## 11. Block or unblock users or parcels
+## 11. Block or unblock users or parcels and other management
 ### Request: block user
 PATCH =>  api/v1/user/updateUsers/:id
+id: ObjectId of user
 Request
 ```javascript 
 {
@@ -162,7 +161,8 @@ Request
 }
 ```
 ### Request: block parcel
-PATCH =>  api/v1/parcel/blockParcel/:id
+PATCH =>  api/v1/parcel/updateParcel/:id
+id: ObjectId of parcel
 Request
 ```javascript 
 {
@@ -172,6 +172,7 @@ Request
 ## 12. Update delivery statuses
 ### Request:
 PATCH =>  api/v1/user/updateUsers/:id
+id: ObjectId of  parcel
 Request
 ```javascript 
 {
@@ -186,4 +187,20 @@ Request
 ## 13. Track Parcels
 ### Request:
 GET =>  api/v1/parcel/tracking-events/:trackingId
+trackingId:TRK-YYYYMMDD-xxxxxx
 
+# Additonal SENDER/ADMIN
+## 14. create coupon code
+### Request:
+POST =>  /api/v1/parcel/createCoupon
+Request
+```javascript 
+{
+  "code": "SAVE25",
+  "discountAmount": 25,
+  "discountType": "percent",
+  "isActive": true
+ 
+}
+
+```
