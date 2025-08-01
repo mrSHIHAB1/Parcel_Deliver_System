@@ -20,7 +20,7 @@ const trackingEventSchema = new Schema({
     
   },
   location: {
-    type: String,     // add this field to store location string
+    type: String,     
     default: '',
   },
   timestamp: {

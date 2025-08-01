@@ -13,28 +13,24 @@ const ParcelStatusEnum = z.enum([
 
 const ReceiverConfirmationEnum = z.enum(["Pending", "Confirmed"]);
 
-// Tracking Event Schema
+
 export const trackingEventZodSchema = z.object({
   status: ParcelStatusEnum,
   note: z.string().optional(),
-  updatedBy: z.string().optional(), // Assuming ObjectId as string
+  updatedBy: z.string().optional(), 
   location: z.string().optional(),
   timestamp: z.date().optional(),
 });
-
+const localPhoneRegex = /^01[3-9]\d{8}$/;
 // Main Parcel Schema
 export const createParcelZodSchema = z.object({
   trackingId: z
     .string({ error: "Tracking ID is required" })
     .min(5, "Tracking ID must be at least 5 characters").optional(),
   
-  sender: z
-    .string({ error: "Sender is required" })
-    .min(3, "Sender name must be at least 3 characters").optional(),
+ sender: z.string().regex(localPhoneRegex, { message: "Sender phone must be a valid 11-digit BD number (e.g., 01828518808)" }),
+  receiver: z.string().regex(localPhoneRegex, { message: "Receiver phone must be a valid 11-digit BD number" }),
 
-  receiver: z
-    .string({ error: "Receiver is required" })
-    .min(3, "Receiver name must be at least 3 characters"),
 
   type: z
     .string({ error: "Parcel type is required" })
@@ -66,8 +62,9 @@ export const createParcelZodSchema = z.object({
 
 export const updateParcelZodSchema = z.object({
   trackingId: z.string().optional(),
-  sender: z.string().optional(),
-  receiver: z.string().optional(),
+ sender: z.string().regex(localPhoneRegex, { message: "Sender phone must be a valid 11-digit BD number (e.g., 01828518808)" }).optional(),
+  receiver: z.string().regex(localPhoneRegex, { message: "Receiver phone must be a valid 11-digit BD number" }).optional(),
+
   type: z.string().optional(),
   weight: z.number().optional(),
   fromAddress: z.string().optional(),
@@ -95,7 +92,7 @@ export const updateParcelZodSchema = z.object({
       'Blocked',
     ]),
     note: z.string().optional(),
-    updatedBy: z.string().optional(), // assuming ObjectId is string
+    updatedBy: z.string().optional(), 
     timestamp: z.date().optional(),
   })).optional()
 });

@@ -3,7 +3,7 @@ import { catchAsync } from "../../utils/catchAsync";
 import { UserServices } from "./user.service";
 import { sendResponse } from "../../utils/sendResponse";
 import httpStatus from "http-status-codes";
-import { Parcel } from "../parcel/parcel.model";
+
 
 
 const createUser=catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
@@ -19,11 +19,7 @@ const createUser=catchAsync(async(req:Request,res:Response,next:NextFunction)=>{
 const getAllUsers = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const result = await UserServices.getAllUsers();
 
-    // res.status(httpStatus.OK).json({
-    //     success: true,
-    //     message: "All Users Retrieved Successfully",
-    //     data: users
-    // })
+   
     sendResponse(res, {
         success: true,
         statusCode: httpStatus.CREATED,
@@ -33,12 +29,12 @@ const getAllUsers = catchAsync(async (req: Request, res: Response, next: NextFun
     })
 })
 const Updatuser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
- const { id } = req.params; // Get user ID from URL
+ const { id } = req.params; 
   const result = await UserServices. updateUser(id, req.body);
 sendResponse(res,{
         success:true,
         statusCode:httpStatus.CREATED,
-        message:"User Created Successfully",
+        message:"Updated user Successfully",
         data:result
     })
 })

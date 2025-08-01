@@ -3,7 +3,7 @@ import { ICoupon, IParcel } from "./parcel.interface";
 import { Coupon, Parcel } from "./parcel.model";
 
 const createParcel = async (payload: IParcel) => {
-  console.log("Payload:", payload);
+ 
 
   const { weight, baseFee, ratePerKg,couponCode,  ...rest } = payload;
 
@@ -12,10 +12,10 @@ const createParcel = async (payload: IParcel) => {
   };
 
   const feeWithoutDiscount = calculateFee(weight ?? 0, baseFee ?? 100, ratePerKg ?? 50);
-  console.log("Feewithout",feeWithoutDiscount)
+ 
  let discountAmount = 0;
-console.log("got",couponCode)
-  // 2. Apply coupon logic if couponCode exists
+
+
   if (couponCode) {
     const coupon = await Coupon.findOne({ code: couponCode });
 
@@ -33,15 +33,14 @@ console.log("got",couponCode)
     if (discountAmount > feeWithoutDiscount) {
       discountAmount = feeWithoutDiscount;
     }
-    console.log("dis",discountAmount)
+    
   }
 
-  // 3. Final fee after discount
+  
   const fee = feeWithoutDiscount - discountAmount;
-  console.log("fee",fee)
-  const random = Math.floor(100000 + Math.random() * 900000);
+  
+  
 
- // const trackingId = `PKG-${Date.now()}-${random}`;
  const trackingId=generateTrackingId();
 
   const parcel = await Parcel.create({
@@ -54,7 +53,7 @@ console.log("got",couponCode)
     couponCode 
     
   });
-  console.log(parcel)
+ 
   return parcel;
 }
 
@@ -109,7 +108,7 @@ const confirmation = async (id: string, payload: Partial<IParcel>) => {
     throw new Error("Parcel not found");
   }
 
-  // ✅ Check the current value from the DB, not from the payload
+  
   if (existParcel.reciverConfiramtion === "Pending") {
     const parcel = await Parcel.findByIdAndUpdate(id, payload, { new: true });
     return parcel;
@@ -122,11 +121,11 @@ const getDeliveryHistory = async (email: string) => {
   const user = await User.findOne({ email });
   const phone = user?.phone;
 
-  // Fetch only delivered parcels for this receiver
+
   const history = await Parcel.find({
     receiver: phone,
     status: 'Delivered',
-  }).sort({ deliveredAt: -1 }); // recent first
+  }).sort({ deliveredAt: -1 }); 
 
   return history;
 };
@@ -176,7 +175,7 @@ export const updateParcelStatus = async ({
     const currentIndex = statusFlow.indexOf(parcel.status);
   const newIndex = statusFlow.indexOf(newStatus);
 
-  // If new status is not part of flow or goes backward, throw error
+  
   if (newIndex === -1) {
     throw new Error('Invalid status');
   }
@@ -191,10 +190,10 @@ export const updateParcelStatus = async ({
     throw new Error('Parcel is already in that status');
   }
 
-  // Update status
+ 
   parcel.status = newStatus;
 
-  // Add a new tracking event
+
   parcel.trackingEvents.push({
     status: newStatus,
     updatedBy: updatedBy as Types.ObjectId,
@@ -203,9 +202,9 @@ export const updateParcelStatus = async ({
     timestamp: new Date(),
   });
 
-  // Save parcel with new status and tracking event
+ 
   const updatedParcel = await parcel.save();
-console.log(updatedParcel)
+
   return updatedParcel;
 };
 
@@ -218,7 +217,7 @@ export interface CreateCouponInput {
 }
 
 export const createCoupon = async (data: CreateCouponInput): Promise<ICoupon> => {
-  // Check if coupon code already exists
+  
   const existing = await Coupon.findOne({ code: data.code });
   if (existing) {
     throw new Error('Coupon code already exists');

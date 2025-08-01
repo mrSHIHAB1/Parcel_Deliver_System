@@ -10,12 +10,13 @@ import { ICoupon } from "./parcel.interface";
 const createParcel=catchAsync(async(req:Request,res:Response)=>{
    const email = (req.user as { email: string }).email;
 
-console.log("Payload:",req.body);
+
 
  const trackingEvents = [
   {
     status: 'Requested',
     note: 'Parcel created',
+    location:req.body.fromAddress,
     timestamp: new Date(), 
   },
 ];
@@ -30,15 +31,28 @@ console.log("Payload:",req.body);
 sendResponse(res,{
         statusCode: 201,
         success: true,
-        message: 'Tour created successfully',
+        message: 'Parcel created successfully',
         data: result,
 })
 
 });
 
 const cancelParcle=catchAsync(async(req:Request,res:Response)=>{
+  const trackingEvents = [
+  {
+    status: 'Cancelled',
+    note: 'Cancelled by sender',
+    location:req.body.fromAddress,
+    timestamp: new Date(), 
+  },
+];
+
+   const parcelData = {
+      ...req.body,
+      trackingEvents:trackingEvents
+    };
     
-    const result= await ParcelService.cancelParcel(req.params.id, req.body)
+    const result= await ParcelService.cancelParcel(req.params.id, parcelData)
     sendResponse(res, {
         statusCode: 200,
         success: true,
@@ -120,13 +134,13 @@ export const blockParcel = catchAsync(async (req: Request, res: Response) => {
 
 
 
-// controllers/parcel.controller.ts
-// controllers/parcel.controller.ts
+
+
 export const updateStatusController = catchAsync(async (req: Request, res: Response) => {
   const parcelId = req.params.id;
   const { newStatus, location,note } = req.body;
-  const updatedBy = (req.user as { id: string }).id; // must be set in auth middleware
-console.log(location)
+  const updatedBy = (req.user as { id: string }).id;
+
   const result = await updateParcelStatus({
     parcelId,
     newStatus,

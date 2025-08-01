@@ -41,9 +41,9 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 export interface ICoupon  {
   code: string;
-  discountAmount: number; // flat discount amount OR percentage
+  discountAmount: number; 
   isActive: boolean;
   expiresAt?: Date;
-  discountType: 'flat' | 'percent'; // type of discount
+  discountType: 'flat' | 'percent'; 
 }
 
