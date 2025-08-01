@@ -137,11 +137,10 @@ const blockParcel = async (id: string, payload: Partial<IParcel>) => {
     throw new Error("Parcel not found");
   }
 
-
   const parcel = await Parcel.findByIdAndUpdate(id, payload, { new: true });
   return parcel;
-
 };
+
 import { Types } from 'mongoose';
 import { ParcelStatus } from './parcel.interface';
 import { generateTrackingId } from "../../utils/generateTracking";

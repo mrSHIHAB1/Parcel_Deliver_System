@@ -25,6 +25,7 @@ export interface IUser {
     isDeleted?: string;
     isActive?: IsActive;
     isVerified?: boolean;
+    isblocked?:boolean;
     role: Role;
     sendinfo?: Types.ObjectId[]
     reciveinfo?: Types.ObjectId[]

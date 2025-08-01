@@ -105,15 +105,16 @@ const getallParcel=catchAsync(async(req:Request,res:Response)=>{
     data: data,
   });
 })
-const blockParcel=catchAsync(async(req:Request,res:Response)=>{
-    
-    const result= await ParcelService.confirmation(req.params.id, req.body)
-    sendResponse(res, {
-        statusCode: 200,
-        success: true,
-        message: 'Parcel updated successfully',
-        data: result,
-    });
+export const blockParcel = catchAsync(async (req: Request, res: Response) => {
+  const parcelId = req.params.id;
+  const result = await ParcelService.blockParcel(parcelId, req.body);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Parcel blocked/unblocked successfully',
+    data: result,
+  });
 });
 
 
@@ -142,10 +143,17 @@ console.log(location)
   });
 });
 export const getParcelstatusById = catchAsync(async (req: Request, res: Response) => {
-  const parcelId = req.params.id;
+ const trackingId = req.params.trackingId;
  
-  const parcel = await Parcel.findById(parcelId).select('trackingEvents');
-
+  const parcel = await Parcel.findOne({ trackingId: trackingId }).select('trackingEvents sender fee');
+  if (!parcel) {
+    return sendResponse(res, {
+      success: false,
+      statusCode: 404,
+      message: 'Parcel not found',
+      data: null,
+    });
+  }
 const trackingEvents = parcel?.trackingEvents.map(({ status, note, timestamp }) => ({
     status,
     note,
@@ -156,7 +164,11 @@ const trackingEvents = parcel?.trackingEvents.map(({ status, note, timestamp }) 
     success: true,
     statusCode: 200,
     message: 'Tracking events fetched successfully',
-    data: trackingEvents,
+    data: {
+      sender: parcel.sender,
+      fee: parcel.fee,
+      trackingEvents,
+    },
   });
 
  

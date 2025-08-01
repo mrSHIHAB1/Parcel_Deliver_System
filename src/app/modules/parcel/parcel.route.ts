@@ -16,10 +16,12 @@ router.get("/getParcel",checkAuth(Role.SENDER),ParcelController.getParcelsByEmai
 router.get("/reciverParcels",checkAuth(Role.RECIVER),ParcelController.incomingParcels)
 router.patch("/reciverConfirm/:id",checkAuth(Role.RECIVER),ParcelController.confirmDelivery)
 router.get("/getreciverhistory",checkAuth(Role.RECIVER),ParcelController.getReceiverHistory)
-router.get("/allparcel",checkAuth(Role.ADMIN),ParcelController.getallParcel)
 //ADMIN
-router.patch("/blockParcel",checkAuth(Role.ADMIN),ParcelController.blockParcel)
+router.get("/allparcel",checkAuth(Role.ADMIN),ParcelController.getallParcel)
+router.post("/blockParcel/:id",checkAuth(Role.ADMIN),ParcelController.blockParcel)
 router.patch('/update-status/:id',checkAuth(Role.ADMIN), ParcelController.updateStatusController);
-router.get('/tracking-events/:id',checkAuth(Role.ADMIN,Role.SENDER,Role.RECIVER), ParcelController.getParcelstatusById)
 router.post('/createCoupon',checkAuth(Role.ADMIN,Role.SENDER),ParcelController.createCouponController)
+//Public
+router.get('/tracking-events/:trackingId', ParcelController.getParcelstatusById)
+
 export const ParcelRoutes=router;
