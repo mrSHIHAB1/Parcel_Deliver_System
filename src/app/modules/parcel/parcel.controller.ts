@@ -119,14 +119,14 @@ const getallParcel=catchAsync(async(req:Request,res:Response)=>{
     data: data,
   });
 })
-export const blockParcel = catchAsync(async (req: Request, res: Response) => {
+export const updateParcel = catchAsync(async (req: Request, res: Response) => {
   const parcelId = req.params.id;
   const result = await ParcelService.blockParcel(parcelId, req.body);
 
   sendResponse(res, {
     statusCode: 200,
     success: true,
-    message: 'Parcel blocked/unblocked successfully',
+    message: 'Parcel Updated successfully',
     data: result,
   });
 });
@@ -215,7 +215,7 @@ export const ParcelController={
     confirmDelivery,
     getReceiverHistory,
     getallParcel,
-    blockParcel,
+    updateParcel,
     
     updateStatusController,
     getParcelstatusById,

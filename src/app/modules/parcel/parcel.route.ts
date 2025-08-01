@@ -18,7 +18,7 @@ router.patch("/reciverConfirm/:id",checkAuth(Role.RECIVER),ParcelController.conf
 router.get("/getreciverhistory",checkAuth(Role.RECIVER),ParcelController.getReceiverHistory)
 //ADMIN
 router.get("/allparcel",checkAuth(Role.ADMIN),ParcelController.getallParcel)
-router.post("/blockParcel/:id",checkAuth(Role.ADMIN),ParcelController.blockParcel)
+router.post("/updateParcel/:id",checkAuth(Role.ADMIN),ParcelController.updateParcel)
 router.patch('/update-status/:id',checkAuth(Role.ADMIN), ParcelController.updateStatusController);
 router.post('/createCoupon',checkAuth(Role.ADMIN,Role.SENDER),ParcelController.createCouponController)
 //Public
