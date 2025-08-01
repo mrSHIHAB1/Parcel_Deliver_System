@@ -52,7 +52,9 @@ http://localhost:5000/api/v1/
 
 ```
 # API Endpoints
-#Auth
+
+# Auth
+
 ## 1. Register User
 ### Request: with roles SENDER/RECIVER/ADMIN
 POST  /api/v1/user/register
@@ -87,7 +89,9 @@ Request
   "password": "Mdshiab12@"
 }
 ```
-#SENDER
+
+# SENDER
+
 ## 4. Create parcel via SENDER Role
 ### Request:
 POST =>  api/v1/parcel/createParcel
@@ -119,7 +123,9 @@ Request
 ## 6. View all their parcels and status logs
 ### Request:
 GET =>  api/v1/parcel/getParcel
-#RECIVER
+
+# RECIVER
+
 ## 7. View incoming parcels
 ### Request:
 GET =>  api/v1/parcel/reciverParcels
@@ -136,7 +142,9 @@ Request
 ## 9. Delivery history
 ### Request:
 GET =>  api/v1/parcel/getreciverhistory
-#ADMIN
+
+# ADMIN
+
 ## 10. View and manage all users and parcels
 ### Request:for Parcels
 GET =>  api/v1/parcel/allparcel
@@ -164,7 +172,9 @@ Request
   "location":"dhaka"
 }
 ```
-#PUBLIC
+
+# PUBLIC
+
 ## 13. Track Parcels
 ### Request:
 PATCH =>  api/v1/parcel/tracking-events/:id
