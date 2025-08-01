@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateZodSchema = exports.createUserZodSchema = void 0;
 const zod_1 = require("zod");
+const localPhoneRegex = /^01[3-9]\d{8}$/;
 exports.createUserZodSchema = zod_1.z.object({
     name: zod_1.z
         .string({ error: "Name is required" })
@@ -24,12 +25,8 @@ exports.createUserZodSchema = zod_1.z.object({
         .regex(/(?=.*\d)/, {
         message: "Password must contain at least 1 number.",
     }),
-    phone: zod_1.z
-        .string()
-        .regex(/^(?:\+8801\d{9}|01\d{9})$/, {
-        message: "Phone number must be valid for Bangladesh. Format: +8801XXXXXXXXX or 01XXXXXXXXX",
-    })
-        .optional(),
+    phone: zod_1.z.string().regex(localPhoneRegex, { message: "Sender phone must be a valid 11-digit BD number (e.g., 01828518808)" }),
+    role: zod_1.z.enum(["ADMIN", "SENDER", "USER", "RECIVER"]),
     address: zod_1.z
         .string()
         .max(200, { message: "Address cannot exceed 200 characters." })

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { IsActive, Role } from "./user.interface";
-
+const localPhoneRegex = /^01[3-9]\d{8}$/;
 export const createUserZodSchema = z.object({
   name: z
     .string({ error: "Name is required" })
@@ -26,14 +26,8 @@ export const createUserZodSchema = z.object({
       message: "Password must contain at least 1 number.",
     }),
 
-  phone: z
-    .string()
-    .regex(/^(?:\+8801\d{9}|01\d{9})$/, {
-      message:
-        "Phone number must be valid for Bangladesh. Format: +8801XXXXXXXXX or 01XXXXXXXXX",
-    })
-    .optional(),
-
+  phone:z.string().regex(localPhoneRegex, { message: "Sender phone must be a valid 11-digit BD number (e.g., 01828518808)" }),
+ role: z.enum(["ADMIN", "SENDER", "USER", "RECIVER"]), 
   address: z
     .string()
     .max(200, { message: "Address cannot exceed 200 characters." })
