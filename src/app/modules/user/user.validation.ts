@@ -76,6 +76,7 @@ export const updateZodSchema=z.object({
     .optional(),
 
   isVerified: z.boolean().optional(),
+  isblocked:z.boolean().optional(),
   sendinfo: z.array(z.string()).optional(),
   reciveinfo: z.array(z.string()).optional(),
 });

@@ -28,6 +28,7 @@ const createParcel=catchAsync(async(req:Request,res:Response)=>{
     };
 
     const result = await ParcelService.createParcel(parcelData);
+    
 sendResponse(res,{
         statusCode: 201,
         success: true,

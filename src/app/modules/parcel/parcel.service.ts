@@ -79,6 +79,7 @@ const getParcelsByEmail = async (email: string) => {
 
   return parcels.map(parcel => ({
     trackingId: parcel.trackingId,
+    id:parcel._id,
     sender: parcel.sender,
     type: parcel.type,
     weight: parcel.weight,

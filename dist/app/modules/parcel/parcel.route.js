@@ -18,7 +18,7 @@ router.patch("/reciverConfirm/:id", (0, checkAuth_1.checkAuth)(user_interface_1.
 router.get("/getreciverhistory", (0, checkAuth_1.checkAuth)(user_interface_1.Role.RECIVER), parcel_controller_1.ParcelController.getReceiverHistory);
 //ADMIN
 router.get("/allparcel", (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN), parcel_controller_1.ParcelController.getallParcel);
-router.post("/blockParcel/:id", (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN), parcel_controller_1.ParcelController.blockParcel);
+router.post("/updateParcel/:id", (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN), parcel_controller_1.ParcelController.updateParcel);
 router.patch('/update-status/:id', (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN), parcel_controller_1.ParcelController.updateStatusController);
 router.post('/createCoupon', (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN, user_interface_1.Role.SENDER), parcel_controller_1.ParcelController.createCouponController);
 //Public

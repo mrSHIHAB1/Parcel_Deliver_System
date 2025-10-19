@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ParcelController = exports.getParcelstatusById = exports.updateStatusController = exports.blockParcel = void 0;
+exports.ParcelController = exports.getParcelstatusById = exports.updateStatusController = exports.updateParcel = void 0;
 const catchAsync_1 = require("../../utils/catchAsync");
 const parcel_service_1 = require("./parcel.service");
 const sendResponse_1 = require("../../utils/sendResponse");
@@ -99,13 +99,13 @@ const getallParcel = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0
         data: data,
     });
 }));
-exports.blockParcel = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.updateParcel = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const parcelId = req.params.id;
     const result = yield parcel_service_1.ParcelService.blockParcel(parcelId, req.body);
     (0, sendResponse_1.sendResponse)(res, {
         statusCode: 200,
         success: true,
-        message: 'Parcel blocked/unblocked successfully',
+        message: 'Parcel Updated successfully',
         data: result,
     });
 }));
@@ -171,7 +171,7 @@ exports.ParcelController = {
     confirmDelivery,
     getReceiverHistory,
     getallParcel,
-    blockParcel: exports.blockParcel,
+    updateParcel: exports.updateParcel,
     updateStatusController: exports.updateStatusController,
     getParcelstatusById: exports.getParcelstatusById,
     createCouponController
