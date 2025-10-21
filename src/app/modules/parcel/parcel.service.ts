@@ -1,6 +1,9 @@
 import { User } from "../user/user.model";
 import { ICoupon, IParcel } from "./parcel.interface";
 import { Coupon, Parcel } from "./parcel.model";
+import { Types } from 'mongoose';
+import { ParcelStatus } from './parcel.interface';
+import { generateTrackingId } from "../../utils/generateTracking";
 
 const createParcel = async (payload: IParcel) => {
  
@@ -80,8 +83,11 @@ const getParcelsByEmail = async (email: string) => {
   return parcels.map(parcel => ({
     trackingId: parcel.trackingId,
     id:parcel._id,
+    
+    receiver:parcel.receiver,
     sender: parcel.sender,
     type: parcel.type,
+    createdAt:parcel.createdAt,
     weight: parcel.weight,
     fromAddress: parcel.fromAddress,
     toAddress: parcel.toAddress,
@@ -97,7 +103,7 @@ const incomingParcels = async (email: string) => {
   const userd = await User.findOne({ email: email });
   const phone = userd?.phone;
   const dataa = await Parcel.find({ receiver: phone }).select(
-    'trackingId sender status fromAddress toAddress createdAt'
+    'trackingId type sender status fromAddress toAddress createdAt trackingEvents'
   );
 
 
@@ -141,9 +147,6 @@ const blockParcel = async (id: string, payload: Partial<IParcel>) => {
   return parcel;
 };
 
-import { Types } from 'mongoose';
-import { ParcelStatus } from './parcel.interface';
-import { generateTrackingId } from "../../utils/generateTracking";
 
 interface UpdateParcelStatusInput {
   parcelId: string;

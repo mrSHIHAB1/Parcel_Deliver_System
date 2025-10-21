@@ -67,7 +67,7 @@ const getParcelsByEmail = catchAsync(async (req: Request, res: Response) => {
   const createdby = (req.user as { email: string }).email;
 
   const parcels = await ParcelService.getParcelsByEmail(createdby);
-
+console.log(parcels)
   sendResponse(res, {
     statusCode: 200,
     success: true,
