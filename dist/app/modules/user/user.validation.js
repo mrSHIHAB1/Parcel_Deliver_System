@@ -68,6 +68,7 @@ exports.updateZodSchema = zod_1.z.object({
         .max(200, { message: "Address cannot exceed 200 characters." })
         .optional(),
     isVerified: zod_1.z.boolean().optional(),
+    isblocked: zod_1.z.boolean().optional(),
     sendinfo: zod_1.z.array(zod_1.z.string()).optional(),
     reciveinfo: zod_1.z.array(zod_1.z.string()).optional(),
 });

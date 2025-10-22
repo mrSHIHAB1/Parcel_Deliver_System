@@ -49,10 +49,11 @@ const getAllUsers = () => __awaiter(void 0, void 0, void 0, function* () {
     };
 });
 const updateUser = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const updatedUser = yield user_model_1.User.findByIdAndUpdate(id, payload, { new: true });
-    if (!updatedUser) {
+    const updatedUserr = yield user_model_1.User.findByIdAndUpdate(id, payload, { new: true });
+    if (!updatedUserr) {
         throw new Error('User not found');
     }
+    return updatedUserr;
 });
 exports.UserServices = {
     getAllUsers,

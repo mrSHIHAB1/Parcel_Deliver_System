@@ -54,6 +54,7 @@ const cancelParcle = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0
 const getParcelsByEmail = (0, catchAsync_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const createdby = req.user.email;
     const parcels = yield parcel_service_1.ParcelService.getParcelsByEmail(createdby);
+    console.log(parcels);
     (0, sendResponse_1.sendResponse)(res, {
         statusCode: 200,
         success: true,

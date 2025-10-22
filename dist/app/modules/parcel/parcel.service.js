@@ -23,6 +23,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ParcelService = exports.createCoupon = exports.updateParcelStatus = void 0;
 const user_model_1 = require("../user/user.model");
 const parcel_model_1 = require("./parcel.model");
+const generateTracking_1 = require("../../utils/generateTracking");
 const createParcel = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const { weight, baseFee, ratePerKg, couponCode } = payload, rest = __rest(payload, ["weight", "baseFee", "ratePerKg", "couponCode"]);
     const calculateFee = (weight, baseFee, ratePerKg) => {
@@ -74,8 +75,11 @@ const getParcelsByEmail = (email) => __awaiter(void 0, void 0, void 0, function*
     }
     return parcels.map(parcel => ({
         trackingId: parcel.trackingId,
+        id: parcel._id,
+        receiver: parcel.receiver,
         sender: parcel.sender,
         type: parcel.type,
+        createdAt: parcel.createdAt,
         weight: parcel.weight,
         fromAddress: parcel.fromAddress,
         toAddress: parcel.toAddress,
@@ -89,7 +93,7 @@ const getParcelsByEmail = (email) => __awaiter(void 0, void 0, void 0, function*
 const incomingParcels = (email) => __awaiter(void 0, void 0, void 0, function* () {
     const userd = yield user_model_1.User.findOne({ email: email });
     const phone = userd === null || userd === void 0 ? void 0 : userd.phone;
-    const dataa = yield parcel_model_1.Parcel.find({ receiver: phone }).select('trackingId sender status fromAddress toAddress createdAt');
+    const dataa = yield parcel_model_1.Parcel.find({ receiver: phone }).select('trackingId type sender status fromAddress toAddress createdAt trackingEvents');
     return dataa;
 });
 const confirmation = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
@@ -122,7 +126,6 @@ const blockParcel = (id, payload) => __awaiter(void 0, void 0, void 0, function*
     const parcel = yield parcel_model_1.Parcel.findByIdAndUpdate(id, payload, { new: true });
     return parcel;
 });
-const generateTracking_1 = require("../../utils/generateTracking");
 const updateParcelStatus = (_a) => __awaiter(void 0, [_a], void 0, function* ({ parcelId, newStatus, updatedBy, location = '', note = '', }) {
     const parcel = yield parcel_model_1.Parcel.findById(parcelId);
     if (!parcel) {
